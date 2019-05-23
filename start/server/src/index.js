@@ -1,14 +1,19 @@
 const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./schema');
+const { createStore } = require('./utils');
+
+const LaunchAPI = require('./datasources/launch');
+const UserAPI = require('./datasources/user');
+
+const store = createStore();
 
 const server = new ApolloServer({
     typeDefs,
-    playground: { version: '1.7.25' }
-    // playground: {
-    //     settings: {
-    //         'editor.theme': 'light',
-    //     }
-    // },
+    playground: { version: '1.7.25' },
+    dataSources: () => ({
+        launchAPI: new LaunchAPI(),
+        userAPI: new UserAPI({ store })
+    })
 });
 
 server.listen().then(({ url }) => {
