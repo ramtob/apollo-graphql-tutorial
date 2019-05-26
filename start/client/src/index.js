@@ -8,12 +8,22 @@ import ReactDOM from 'react-dom';
 import Pages from './pages';
 
 const cache = new InMemoryCache();
-const link = new HttpLink({
-  uri: 'https://server.ramtob.now.sh'
-});
+
 const client = new ApolloClient({
-  cache,
-  link
+    cache,
+    link: new HttpLink({
+        uri: 'http://localhost:4000/graphql',
+        headers: {
+            authorization: localStorage.getItem('token'),
+        },
+    }),
+});
+
+cache.writeData({
+    data: {
+        isLoggedIn: !!localStorage.getItem('token'),
+        cartItems: [],
+    },
 });
 
 ReactDOM.render(
